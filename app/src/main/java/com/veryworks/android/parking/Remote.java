@@ -70,7 +70,7 @@ public class Remote {
                 Log.i("Remote", result);
                 dialog.dismiss();
                 // remote 객체를 생성한 측의 callback 함수 호출
-                obj.call();
+                obj.call(result);
             }
         }.execute(urlString); // AsyncTask에 값 전달
     }
@@ -78,6 +78,6 @@ public class Remote {
     public interface Callback{
         public Context getContext();
         public String getUrl();
-        public void call();
+        public void call(String jsonString);
     }
 }

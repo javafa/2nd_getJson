@@ -11,6 +11,9 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, Remote.Callback {
 
     private GoogleMap mMap;
@@ -53,12 +56,32 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     @Override
-    public void call() {
-        // MainActivity의 화면에 뭔가를 세팅해주면, Remote 에서 이 함수를 호출해 준다.
+    public void call(String jsonString) {
+        try {
+            // MainActivity의 화면에 뭔가를 세팅해주면, Remote 에서 이 함수를 호출해 준다.
+            // 1. json String 전체를 JSONObject 로 변환
+            JSONObject jsonObject = new JSONObject(jsonString);
+            // 2. JSONObject 중에 최상위의 object 를 꺼낸다
+            JSONObject rootObject = jsonObject.getJSONObject("SearchParkingInfoRealtime");
+            // 3. 사용하려는 주차장 정보(복수개)들을 JSONArray 로 꺼낸다
+            //    이 데이터를 rootObject 바로 아래에 실제 정보가 있지만 계층구조상 더 아래에 존재할 수도 있다
+            JSONArray rows = rootObject.getJSONArray("row");
+            int arrayLength = rows.length();
 
-        while(true) {
-            LatLng parking = new LatLng(37, 126);
-            mMap.addMarker(new MarkerOptions().position(parking).title("주차가능대수/총대수"));
+            for (int i = 0; i < arrayLength; i++) {
+                JSONObject park = rows.getJSONObject(i);
+                double lat = park.getDouble("LAT");
+                double lng = park.getDouble("LNG");
+                LatLng parking = new LatLng(lat, lng);
+
+                int capacity = park.getInt("CAPACITY");
+                int current = park.getInt("CUR_PARKING");
+                int space = capacity - current;
+
+                mMap.addMarker(new MarkerOptions().position(parking).title(space + "/" + capacity));
+            }
+        }catch(Exception e){
+            e.printStackTrace();
         }
     }
 }
