@@ -42,7 +42,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //서울시청 위도(Latitude): 37.566696, 경도(Longitude): 126.977942
 
         LatLng seoul = new LatLng(37.566696, 126.977942);
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(seoul,10));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(seoul,12));
     }
 
     @Override
