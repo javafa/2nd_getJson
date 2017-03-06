@@ -17,7 +17,7 @@ import org.json.JSONObject;
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, Remote.Callback {
 
     private GoogleMap mMap;
-    private String url = "http://openapi.seoul.go.kr:8088/4c425976676b6f643437665377554c/xml/SearchParkingInfoRealtime/1/500";
+    private String url = "http://openapi.seoul.go.kr:8088/4c425976676b6f643437665377554c/json/SearchParkingInfoRealtime/1/500";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,12 +70,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             for (int i = 0; i < arrayLength; i++) {
                 JSONObject park = rows.getJSONObject(i);
-                double lat = park.getDouble("LAT");
-                double lng = park.getDouble("LNG");
+                double lat = getDouble(park,"LAT");
+                double lng = getDouble(park,"LNG");
                 LatLng parking = new LatLng(lat, lng);
 
-                int capacity = park.getInt("CAPACITY");
-                int current = park.getInt("CUR_PARKING");
+                int capacity = getInt(park, "CAPACITY");
+                int current = getInt(park, "CUR_PARKING");
                 int space = capacity - current;
 
                 mMap.addMarker(new MarkerOptions().position(parking).title(space + "/" + capacity));
@@ -83,5 +83,25 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }catch(Exception e){
             e.printStackTrace();
         }
+    }
+
+    private double getDouble(JSONObject obj, String key){
+        double result = 0;
+        try {
+            result = obj.getDouble(key);
+        }catch(Exception e){
+
+        }
+        return result;
+    }
+
+    private int getInt(JSONObject obj, String key){
+        int result = 0;
+        try {
+            result = obj.getInt(key);
+        }catch(Exception e){
+
+        }
+        return result;
     }
 }
