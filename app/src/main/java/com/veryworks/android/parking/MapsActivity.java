@@ -1,5 +1,6 @@
 package com.veryworks.android.parking;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -18,6 +19,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private GoogleMap mMap;
     private String url = "http://openapi.seoul.go.kr:8088/4c425976676b6f643437665377554c/json/SearchParkingInfoRealtime/1/500";
+    ProgressDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +37,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         // Add a marker in Sydney and move the camera
         // 1. 공영주차장 마커 전체를 화면에 출력
+        dialog = new ProgressDialog(this);
         Remote remote = new Remote();
         remote.getData(this);
 
@@ -83,6 +86,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }catch(Exception e){
             e.printStackTrace();
         }
+        dialog.dismiss();
+    }
+
+    @Override
+    public ProgressDialog getProgress(){
+        return dialog;
     }
 
     private double getDouble(JSONObject obj, String key){

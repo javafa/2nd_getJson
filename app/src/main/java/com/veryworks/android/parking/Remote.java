@@ -25,13 +25,13 @@ public class Remote {
         }
 
         new AsyncTask<String, Void, String>(){
-            ProgressDialog dialog = new ProgressDialog(obj.getContext());
+
             @Override
             protected void onPreExecute() {
                 // 프로그레스다이얼로그 세팅
-                dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                dialog.setMessage("불러오는 중...");
-                dialog.show();
+                obj.getProgress().setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                obj.getProgress().setMessage("불러오는 중...");
+                obj.getProgress().show();
                 super.onPreExecute();
             }
 
@@ -68,7 +68,6 @@ public class Remote {
                 super.onPostExecute(result);
                 // 결과값 출력
                 Log.i("Remote", result);
-                dialog.dismiss();
                 // remote 객체를 생성한 측의 callback 함수 호출
                 obj.call(result);
             }
@@ -79,5 +78,6 @@ public class Remote {
         public Context getContext();
         public String getUrl();
         public void call(String jsonString);
+        public ProgressDialog getProgress();
     }
 }
